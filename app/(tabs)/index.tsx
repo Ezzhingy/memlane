@@ -1,20 +1,32 @@
+import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 
 import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
-import MapView from "react-native-maps";
-// import db from '@/utils/drizzle';
-// import { user } from '@/models/user';
+import supabase from "@/utils/supabase";
 
-let name: any = "John Doe";
+export default function TabOneScreen() {
+  const [name, setName] = useState("");
 
-// let drizzleTest = async () => {
-//   await db.insert(user).values({ firstName: 'John', lastName: 'Doe' });
-//   let person = await db.select().from(user);
-//   name = person[0].firstName + ' ' + person[0].lastName;
-// }
+  useEffect(() => {
+    const supabaseDBTest = async () => {
+      const { data, error } = await supabase.from("user").select();
 
-export default function HomeScreen() {
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      setName(data[0]?.username);
+    };
+
+    supabaseDBTest();
+  }, []);
+
+  useEffect(() => {
+    console.log("name:", name);
+  }, [name]);
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Hello, World</Text>
