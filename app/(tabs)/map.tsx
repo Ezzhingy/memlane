@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { View } from "@/components/Themed";
+import { Text, View } from "@/components/Themed";
 import MapView from "react-native-maps";
 import { useEffect, useState } from "react";
 // import * as TaskManager from "expo-task-manager";
@@ -40,11 +40,25 @@ export default function MapScreen() {
     // requestPermissions();
   }, []);
 
-  console.log("asd", JSON.stringify(location));
-
   return (
     <View style={styles.container}>
-      <MapView style={styles.map} />
+      {location ? (
+        <MapView
+          style={styles.map}
+          initialRegion={{
+            latitude: location?.coords.latitude!,
+            longitude: location?.coords.longitude!,
+            latitudeDelta: 0.0222,
+            longitudeDelta: 0.0071,
+          }}
+          showsUserLocation
+          followsUserLocation
+          showsMyLocationButton
+          showsPointsOfInterest={false}
+        />
+      ) : (
+        <Text style={styles.title}>Loading...</Text>
+      )}
     </View>
   );
 }
@@ -63,9 +77,15 @@ export default function MapScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
   },
   map: {
     width: "100%",
     height: "100%",
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
 });
