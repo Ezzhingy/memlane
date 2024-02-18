@@ -40,7 +40,8 @@ export default function App() {
 
   async function takePicture() {
     if (cameraRef) {
-      const data = await cameraRef.current?.takePictureAsync({ base64: true });
+      const options = { quality: 1, base64: true, fixOrientation: true, forceUpOrientation: true };
+      const data = await cameraRef.current?.takePictureAsync(options);
       const base64 = data?.base64;
       let uri = data?.uri;
 

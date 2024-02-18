@@ -5,6 +5,8 @@ import { ImageBackground, ScrollView } from "react-native";
 import { StyleSheet } from "react-native";
 import { AsyncStorageContext } from "@/app/_layout";
 import { Link } from "expo-router";
+import { useFocusEffect } from '@react-navigation/native';
+import React from "react";
 
 const MyMemories: React.FC = () => {
   const [memories, setMemories] = useState<any[]>([]);

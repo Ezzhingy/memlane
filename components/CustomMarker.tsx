@@ -1,15 +1,36 @@
-import React from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Image, View, Text, StyleSheet } from 'react-native';
 import { Marker } from 'react-native-maps';
 import { MaterialIcons } from '@expo/vector-icons'; // for icons
 import { Link } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { AsyncStorageContext } from '@/app/_layout';
 
 const CustomMarker = (props: any) => {
     const { id, file_type, file_url, coordinate, title, description, visited, user_id, markerInRange } = props;
 
+    const [username, setUsername] = useState<string>();
+
+    const { didAsyncStorageUpdate } = useContext(AsyncStorageContext);
+
+    useEffect(() => {
+        const getUsername = async () => {
+            try {
+                const currUserId = await AsyncStorage.getItem("id");
+                if (currUserId !== null) {
+                    setUsername(currUserId);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        getUsername();
+    }, [didAsyncStorageUpdate]);
+
     // Render different content based on the type of memory
     const renderContent = (visited: boolean) => {
-        if (visited || user_id === 1) {
+        if (visited || user_id === username) {
             switch (file_type) {
                 case 'image':
                     return (
@@ -54,7 +75,7 @@ const CustomMarker = (props: any) => {
     };
 
     // Style changes if visited or not
-    const markerStyle = user_id === 1
+    const markerStyle = user_id === username
         ? styles.markerOwned
         : visited ? styles.markerVisited : styles.markerNotVisited;
 

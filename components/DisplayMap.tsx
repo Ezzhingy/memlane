@@ -2,12 +2,14 @@ import { Button, DimensionValue, StyleSheet } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import MapView, { Marker, Region } from "react-native-maps";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 // import * as TaskManager from "expo-task-manager";
 import * as Location from "expo-location";
 import { getLocation } from "@/app/functions/location";
 import { min } from "drizzle-orm";
 import CustomMarker from "./CustomMarker";
+import { AsyncStorageContext } from "@/app/_layout";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const LOCATION_TASK_NAME = "background-location-task";
 
@@ -61,6 +63,25 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
   const [markers, setMarkers] = useState<any>([]);
   const [followsUserLocation, setFollowsUserLocation] = useState(true);
 
+  const [username, setUsername] = useState<string>();
+
+  const { didAsyncStorageUpdate } = useContext(AsyncStorageContext);
+
+  useEffect(() => {
+    const getUsername = async () => {
+      try {
+        const currUserId = await AsyncStorage.getItem("id");
+        if (currUserId !== null) {
+          setUsername(currUserId);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getUsername();
+  }, [didAsyncStorageUpdate]);
+
   const handlePanDrag = () => {
     setFollowsUserLocation(false);
   };
@@ -78,9 +99,9 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
       const a =
         Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
         Math.cos(lat1) *
-          Math.cos(lat2) *
-          Math.sin(deltaLon / 2) *
-          Math.sin(deltaLon / 2);
+        Math.cos(lat2) *
+        Math.sin(deltaLon / 2) *
+        Math.sin(deltaLon / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
       const distance = R * c; // in meters
@@ -96,8 +117,7 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
   ) => {
     try {
       const response = await fetch(
-        `/api/memory/nearby?longitude=${longitude}&latitude=${latitude}&radius=${
-          1609 * (radius / 2)
+        `/api/memory/nearby?longitude=${longitude}&latitude=${latitude}&radius=${1609 * (radius / 2)
         }`
       );
       if (!response.ok) {
@@ -107,9 +127,9 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
 
       const markers = await Promise.all(
         data.map(async (memory: any) => {
-          const response2 = await fetch(
-            `/api/memory/visited?memory_id=${memory.id}&user_id=${1}`
-          );
+          const response2 = await fetch(`/api/memory/visited?memory_id=${memory.id}&user_id=${username}`, {
+            method: 'GET'
+          });
 
           if (!response2.ok) {
             throw new Error(`HTTP error! status: ${response2.status}`);

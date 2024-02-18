@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Button, Platform, Text, TouchableOpacity } from 'react-native';
 import { useLocalSearchParams, useNavigation } from 'expo-router';
 import { View } from '@/components/Themed';
@@ -9,6 +9,7 @@ import { Image } from 'react-native';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { format } from 'date-fns';
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AsyncStorageContext } from '../_layout';
 
 interface Memory {
     id?: number;
@@ -20,7 +21,7 @@ interface Memory {
     title: string;
     description?: string;
 }
-  
+
 const formatDate = (dateString: string) => {
     return format(new Date(dateString), 'MMMM d, yyyy  |  h:mm a');
 };
@@ -44,7 +45,7 @@ function Page() {
             fontSize: 16,
             fontWeight: "bold",
             marginLeft: 8
-          },
+        },
         header: {
             flexDirection: "row",
             height: 70,
@@ -104,11 +105,55 @@ function Page() {
     const navigation = useNavigation();
 
     useEffect(() => {
+        (async () => {
+            try {
+                let response = await fetch(`/api/memory/visited?memory_id=${parseInt((id as string).split(':')[0])}&user_id=${username}`);
+
+                const data = await response.json();
+                if (data.length === 0) {
+                    response = await fetch(`/api/memory/visited?memory_id=${parseInt((id as string).split(':')[0])}&user_id=${username}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            memory_id: id,
+                            user_id: username,
+                        }),
+                    });
+
+                }
+            } catch (error) {
+                // console.error('An error occurred:', error);
+            }
+        })();
+    }, [id]);
+
+    const [username, setUsername] = useState<string>();
+
+    const { didAsyncStorageUpdate } = useContext(AsyncStorageContext);
+
+    useEffect(() => {
+        const getUsername = async () => {
+            try {
+                const currUserId = await AsyncStorage.getItem("id");
+                if (currUserId !== null) {
+                    setUsername(currUserId);
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        };
+
+        getUsername();
+    }, [didAsyncStorageUpdate]);
+
+    useEffect(() => {
         const fetchData = async () => {
             // Initialize all reaction counts to 0
             const initialReactionCounts = Object.fromEntries(emojis.map(emoji => [emoji, 0]));
             setReactionCounts(initialReactionCounts);
-    
+
             const responseReaction = await fetch(`/api/reaction/${parseInt((id as string).split(':')[0])}`);
             const dataReaction = await responseReaction.json();
             console.log(dataReaction);
@@ -120,11 +165,11 @@ function Page() {
                 ...prevCounts,
                 ...reactionCounts, // Update reaction counts from database
             }));
-    
+
             const response = await fetch(`/api/memory/${parseInt((id as string).split(':')[0])}`);
             const data = await response.json();
             setMemory(data[0]);
-    
+
             // After setting the memory, get the location name
             if (data[0] && data[0].coordinates) {
                 const latitude = parseFloat((id as string).split(':')[1]);
@@ -133,59 +178,59 @@ function Page() {
             }
         };
         fetchData();
-    }, [id]);
+    }, []);
 
     if (!memory) {
         return <Text>Loading...</Text>;
     }
 
     const handleReaction = async (emoji: string) => {
-    console.log(`Reacted with emoji: ${emoji}`);
+        console.log(`Reacted with emoji: ${emoji}`);
 
-    setActiveReactions(prevState => ({
-        ...prevState,
-        [emoji]: !prevState[emoji],
-    }));
+        setActiveReactions(prevState => ({
+            ...prevState,
+            [emoji]: !prevState[emoji],
+        }));
 
-    try {
-        // Check if the emoji state is true
-        if (!activeReactions[emoji]) {
-            const userId = await AsyncStorage.getItem("id");
-            const response = await fetch(`/api/reaction/${parseInt((id as string).split(':')[0])}`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    user_id: userId,
-                    reaction: emoji,
-                }),
-            });
-            if (!response.ok) {
-                throw new Error('Error posting reaction');
+        try {
+            // Check if the emoji state is true
+            if (!activeReactions[emoji]) {
+                const userId = await AsyncStorage.getItem("id");
+                const response = await fetch(`/api/reaction/${parseInt((id as string).split(':')[0])}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        user_id: userId,
+                        reaction: emoji,
+                    }),
+                });
+                if (!response.ok) {
+                    throw new Error('Error posting reaction');
+                }
+
+                // Increment the reaction count
+                setReactionCounts(prevCounts => ({
+                    ...prevCounts,
+                    [emoji]: (prevCounts[emoji] || 0) + 1,
+                }));
+
+                const data = await response.json();
+                console.log('Reaction posted successfully:', data);
+            } else {
+                // Decrement the reaction count
+                setReactionCounts(prevCounts => ({
+                    ...prevCounts,
+                    [emoji]: Math.max((prevCounts[emoji] || 0) - 1, 0), // Ensure the count doesn't go below 0
+                }));
+
+                console.log(`Reaction for emoji ${emoji} is turned off. Skipping posting.`);
             }
-
-            // Increment the reaction count
-            setReactionCounts(prevCounts => ({
-                ...prevCounts,
-                [emoji]: (prevCounts[emoji] || 0) + 1,
-            }));
-
-            const data = await response.json();
-            console.log('Reaction posted successfully:', data);
-        } else {
-            // Decrement the reaction count
-            setReactionCounts(prevCounts => ({
-                ...prevCounts,
-                [emoji]: Math.max((prevCounts[emoji] || 0) - 1, 0), // Ensure the count doesn't go below 0
-            }));
-
-            console.log(`Reaction for emoji ${emoji} is turned off. Skipping posting.`);
+        } catch (error) {
+            console.error('Failed to post reaction:', error);
         }
-    } catch (error) {
-        console.error('Failed to post reaction:', error);
-    }
-};
+    };
 
 
     return (
@@ -200,13 +245,13 @@ function Page() {
 
             </View>
             <View>
-                {memory.file_type === 'image' && <Image source={{ uri: memory.file_url }} style={{ 
+                {memory.file_type === 'image' && <Image source={{ uri: memory.file_url }} style={{
                     width: "100%",
                     height: 200,
                     alignSelf: "center",
                     borderRadius: 10,
                 }} />}
-                
+
                 <Text style={styles.title}>{memory.title}</Text>
                 <Text style={styles.date}>{formatDate(memory.created_at)}</Text>
                 <Text style={styles.description}>{memory.description || "Visited a new place today!"}</Text>

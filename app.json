@@ -12,11 +12,17 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["location", "fetch", "remote-notification"]
+        "UIBackgroundModes": [
+          "location",
+          "fetch",
+          "remote-notification"
+        ]
       }
     },
     "web": {
@@ -28,7 +34,7 @@
       [
         "expo-router",
         {
-          "origin": "http://localhost:8081/"
+          "origin": "https://treehacks24-csc42l2mz-keegan-gaffneys-projects.vercel.app"
         }
       ],
       [

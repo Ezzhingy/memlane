@@ -5,6 +5,9 @@ export async function GET(request: ExpoRequest) {
     const memory_id = request.expoUrl.searchParams.get('memory_id');
     const user_id = request.expoUrl.searchParams.get('user_id');
 
+    // console.log('1memory_id', memory_id);
+    // console.log('1user_id', user_id);
+
     // Insert reaction into the database
     const { data, error } = await supabase
         .from('user_viewed')
@@ -13,6 +16,7 @@ export async function GET(request: ExpoRequest) {
         .eq('user_id', user_id);
 
     if (error) {
+        console.error(error);
         return new ExpoResponse("Error posting reaction", {
             status: 500,
             headers: {
@@ -24,8 +28,7 @@ export async function GET(request: ExpoRequest) {
 }
 
 export async function POST(request: ExpoRequest) {
-    const memory_id = request.expoUrl.searchParams.get('memory_id');
-    const user_id = request.expoUrl.searchParams.get('user_id');
+    const { memory_id, user_id } = await request.json();
 
     // Insert reaction into the database
     const { data, error } = await supabase
@@ -34,6 +37,7 @@ export async function POST(request: ExpoRequest) {
         .select();
 
     if (error) {
+        console.error(error);
         return new ExpoResponse("Error posting reaction", {
             status: 500,
             headers: {
