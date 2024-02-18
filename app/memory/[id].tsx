@@ -8,6 +8,7 @@ import { StyleSheet } from 'react-native';
 import { Image } from 'react-native';
 import Icon from "react-native-vector-icons/MaterialIcons";
 import { format } from 'date-fns';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface Memory {
     id?: number;
@@ -25,6 +26,8 @@ const formatDate = (dateString: string) => {
 };
 
 function Page() {
+    const [reactionCounts, setReactionCounts] = useState<{ [key: string]: number }>({});
+
 
     const styles = StyleSheet.create({
         container: {
@@ -65,15 +68,47 @@ function Page() {
             flexDirection: "row",
             flex: 1,
         },
+        reactionButtonContainer: {
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            paddingVertical: 10, // Add vertical padding
+            paddingHorizontal: 40, // Add horizontal padding
+        },
+        reactionButton: {
+            padding: 10,
+            borderRadius: 5,
+            backgroundColor: '#eee',
+            justifyContent: 'center',
+            alignItems: 'center',
+        },
+        reactionButtonActive: {
+            backgroundColor: 'lightblue',
+        },
     });
     const { id } = useLocalSearchParams();
     const [memory, setMemory] = useState<Memory>();
     const [locationName, setLocationName] = useState<string>();
+    const [activeReactions, setActiveReactions] = useState<{ [key: string]: boolean }>({
+        '😄': false,
+        '❤️': false,
+        '👍': false,
+        '😊': false,
+        '🎉': false,
+    });
 
     const navigation = useNavigation();
 
     useEffect(() => {
         const fetchData = async () => {
+            // const responseReaction = await fetch(`/api/reactions/${parseInt((id as string).split(':')[0])}`);
+            // const dataReaction = await responseReaction.json();
+            // console.log(dataReaction);
+            // const reactionCounts = dataReaction.reduce((acc: { [key: string]: number }, reaction: any) => {
+            //     acc[reaction.reaction] = (acc[reaction.reaction] || 0) + 1;
+            //     return acc;
+            // }, {});
+            // setReactionCounts(reactionCounts);
+
             const response = await fetch(`/api/memory/${parseInt((id as string).split(':')[0])}`);
             const data = await response.json();
             setMemory(data[0]);
@@ -91,6 +126,37 @@ function Page() {
     if (!memory) {
         return <Text>Loading...</Text>;
     }
+
+    const handleReaction = async (emoji: string) => {
+        console.log(`Reacted with emoji: ${emoji}`);
+        
+        setActiveReactions(prevState => ({
+            ...prevState,
+            [emoji]: !prevState[emoji],
+        }));
+
+        try {
+            const userId = await AsyncStorage.getItem("id");
+            const response = await fetch(`/api/reactions/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    reaction: emoji,
+                }),
+            });
+            if (!response.ok) {
+                throw new Error('Error posting reaction');
+            }
+
+            const data = await response.json();
+            console.log('Reaction posted successfully:', data);
+        } catch (error) {
+            console.error('Failed to post reaction:', error);
+        }
+    };
 
     return (
         <View style={styles.container}>
@@ -114,7 +180,17 @@ function Page() {
                 <Text style={styles.title}>{memory.title}</Text>
                 <Text style={styles.date}>{formatDate(memory.created_at)}</Text>
                 <Text style={styles.description}>{memory.description || "Visited a new place today!"}</Text>
-                
+                <View style={styles.reactionButtonContainer}>
+                    {Object.entries(activeReactions).map(([emoji, isActive]) => (
+                        <TouchableOpacity
+                            key={emoji}
+                            style={[styles.reactionButton, isActive && styles.reactionButtonActive]}
+                            onPress={() => handleReaction(emoji)}
+                        >
+                            <Text>{emoji}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </View>
                 
             </View>
         </View>
