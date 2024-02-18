@@ -5,25 +5,12 @@ import { Text, View } from "@/components/Themed";
 import supabase from "@/utils/supabase";
 import { getLocation, getLocationName } from "../functions/location";
 import DisplayMap from "@/components/DisplayMap";
+import * as Location from "expo-location";
+import MapView, { Region } from "react-native-maps";
 
 export default function HomeScreen() {
-  const [name, setName] = useState("");
+  // const [name, setName] = useState("");
   const [locationName, setLocationName] = useState<string>();
-
-  useEffect(() => {
-    const supabaseDBTest = async () => {
-      const { data, error } = await supabase.from("user").select();
-
-      if (error) {
-        console.error(error);
-        return;
-      }
-
-      setName(data[0]?.username);
-    };
-
-    supabaseDBTest();
-  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
