@@ -8,8 +8,7 @@ import { Link } from "expo-router";
 
 const MyMemories: React.FC = () => {
   const [memories, setMemories] = useState<any[]>([]);
-  const { didAsyncStorageUpdate, setDidAsyncStorageUpdate } =
-    useContext(AsyncStorageContext);
+  const { didAsyncStorageUpdate } = useContext(AsyncStorageContext);
 
   useEffect(() => {
     const getMemories = async () => {

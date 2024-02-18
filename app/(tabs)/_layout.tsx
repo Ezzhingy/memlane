@@ -63,6 +63,13 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
         }}
       />
+      <Tabs.Screen
+        name="personal"
+        options={{
+          title: "Personal",
+          tabBarIcon: ({ color }) => <TabBarIcon name="user" color={color} />,
+        }}
+      />
     </Tabs>
   );
 }
