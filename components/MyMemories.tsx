@@ -4,6 +4,7 @@ import { Text, View } from "./Themed";
 import { ImageBackground, ScrollView } from "react-native";
 import { StyleSheet } from "react-native";
 import { AsyncStorageContext } from "@/app/_layout";
+import { Link } from "expo-router";
 
 const MyMemories: React.FC = () => {
   const [memories, setMemories] = useState<any[]>([]);
@@ -40,8 +41,8 @@ const MyMemories: React.FC = () => {
             </View>
           );
         })}
-      </ScrollView>
-    </View>
+      </ScrollView >
+    </View >
   );
 };
 

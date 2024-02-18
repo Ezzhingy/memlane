@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { useNavigation } from '@react-navigation/native';
 
 export default function App() {
   const [type, setType] = useState(CameraType.back);
@@ -19,6 +20,8 @@ export default function App() {
   // const [toggleVideo, setToggleVideo] = useState(false);
   const [isStoppedRecording, setIsStoppedRecording] = useState(true);
   const cameraRef = useRef<Camera>(null);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     requestCameraPermissions();
@@ -44,8 +47,8 @@ export default function App() {
       if (uri) {
         const parts = uri.split('/');
         uri = parts[parts.length - 1];
-      } 
-      
+      }
+
       try {
         const requestBody = {
           fileName: uri,
@@ -54,25 +57,26 @@ export default function App() {
         };
 
         const response = await fetch('/api/storage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
         });
 
         const responseData = await response.json();
 
-          // Check if the request was successful
-          if (response.ok) {
-              console.log('File uploaded successfully:', responseData.url);
-          } else {
-              console.error('Error uploading file:', responseData.error);
-          }
+        // Check if the request was successful
+        if (response.ok) {
+          console.log('File uploaded successfully:', responseData.url);
+        } else {
+          console.error('Error uploading file:', responseData.error);
+        }
       } catch (error) {
-          console.error('Error uploading file:', error);
+        console.error('Error uploading file:', error);
       }
-      console.log(uri);
+      // console.log(uri);
+      navigation.navigate('create', { uri: uri });
     }
   }
 
@@ -84,7 +88,7 @@ export default function App() {
       if (uri) {
         const parts = uri.split('/');
         uri = parts[parts.length - 1];
-      } 
+      }
 
       if (!uri) {
         console.error('Error starting video recording: URI is undefined');
@@ -94,7 +98,7 @@ export default function App() {
       try {
         const response1 = await fetch(uri);
         const videoData = await response1.arrayBuffer();
-        
+
         // Convert the video file data to base64
         // const base64Video = btoa(new Uint8Array(videoData).reduce((data, byte) => data + String.fromCharCode(byte), ''));
         // const base64Video = Buffer.from(videoData).toString('base64');
@@ -106,23 +110,23 @@ export default function App() {
         };
 
         const response = await fetch('/api/storage', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(requestBody)
         });
 
         const responseData = await response.json();
 
         // Check if the request was successful
         if (response.ok) {
-            console.log('File uploaded successfully:', responseData.url);
+          console.log('File uploaded successfully:', responseData.url);
         } else {
-            console.error('Error uploading video file:', responseData.error);
+          console.error('Error uploading video file:', responseData.error);
         }
       } catch (error) {
-          console.error('Error uploading video file:', error);
+        console.error('Error uploading video file:', error);
       }
       console.log(uri);
     }
@@ -138,20 +142,20 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      { (
+      {(
         <Camera ref={cameraRef} style={styles.camera} type={type}>
 
           <View style={styles.buttonContainer}>
 
-          <TouchableOpacity style={styles.button} onPress={toggleMediaFunc}>
+            <TouchableOpacity style={styles.button} onPress={toggleMediaFunc}>
               <Icon name="photo-camera" size={40} color="white" />
-          </TouchableOpacity>
-            
+            </TouchableOpacity>
+
 
             {toggleMedia && (
               <TouchableOpacity style={styles.button} onPress={takePicture}>
-                  <CircleButton onPress={takePicture} title=" " />
-                  <Text style={styles.text}>PHOTO</Text>
+                <CircleButton onPress={takePicture} title=" " />
+                <Text style={styles.text}>PHOTO</Text>
               </TouchableOpacity>
             )}
 
@@ -159,12 +163,12 @@ export default function App() {
               <View>
                 {isStoppedRecording ? (
                   <TouchableOpacity style={styles.button} onPress={startVideo}>
-                    <CircleButton onPress={startVideo} title=" "/>
+                    <CircleButton onPress={startVideo} title=" " />
                     <Text style={styles.text}>VIDEO</Text>
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity style={styles.button} onPress={stopVideo}>
-                    <CircleButton onPress={stopVideo} title=" "/>
+                    <CircleButton onPress={stopVideo} title=" " />
                     <Text style={styles.text}>STOP</Text>
                   </TouchableOpacity>
                 )}
