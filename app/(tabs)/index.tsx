@@ -1,16 +1,13 @@
 import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 
-import EditScreenInfo from "@/components/EditScreenInfo";
 import { Text, View } from "@/components/Themed";
 import supabase from "@/utils/supabase";
 import { getLocation, getLocationName } from "../functions/location";
-import * as Location from "expo-location";
-import MapView from "react-native-maps";
+import DisplayMap from "@/components/DisplayMap";
 
 export default function HomeScreen() {
   const [name, setName] = useState("");
-  const [location, setLocation] = useState<Location.LocationObject>();
   const [locationName, setLocationName] = useState<string>();
 
   useEffect(() => {
@@ -30,7 +27,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const tempLocation = await getLocation(setLocation);
+      const tempLocation = await getLocation((_) => null);
       await getLocationName(
         setLocationName,
         tempLocation?.coords.latitude!,
@@ -53,23 +50,7 @@ export default function HomeScreen() {
       ) : (
         <Text style={styles.title}>Loading...</Text>
       )}
-      {location ? (
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: location?.coords.latitude!,
-            longitude: location?.coords.longitude!,
-            latitudeDelta: 0.0222,
-            longitudeDelta: 0.0071,
-          }}
-          showsUserLocation
-          followsUserLocation
-          showsMyLocationButton
-          showsPointsOfInterest={false}
-        />
-      ) : (
-        <Text style={styles.title}>Loading...</Text>
-      )}
+      <DisplayMap width="80%" height="60%" />
     </View>
   );
 }
@@ -91,11 +72,6 @@ const styles = StyleSheet.create({
   locationTitle: {
     fontSize: 30,
     fontWeight: "bold",
-    paddingLeft: 60,
-  },
-  map: {
-    width: "80%",
-    height: "60%",
     paddingLeft: 60,
   },
 });
