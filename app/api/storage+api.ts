@@ -36,10 +36,9 @@ export async function POST(request: ExpoRequest): Promise<ExpoResponse> {
         // Fetch the file from the URL
         const response = await fetch(filePath);
         const fileData = await response.arrayBuffer();
-        const base64Data = btoa(new Uint8Array(fileData).reduce((data, byte) => data + String.fromCharCode(byte), ''));
 
         // Upload the file to Supabase storage
-        const url = await uploadFileToStorage(fileName, base64Data, fileType);
+        const url = await uploadFileToStorage(fileName, fileData, fileType);
         console.log('File uploaded successfully. URL:', url);
 
         // Return a success response with the uploaded file URL
