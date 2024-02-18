@@ -2,14 +2,10 @@ import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 
 import { Text, View } from "@/components/Themed";
-import supabase from "@/utils/supabase";
 import { getLocation, getLocationName } from "../functions/location";
 import DisplayMap from "@/components/DisplayMap";
-import * as Location from "expo-location";
-import MapView, { Region } from "react-native-maps";
 
 export default function HomeScreen() {
-  // const [name, setName] = useState("");
   const [locationName, setLocationName] = useState<string>();
 
   useEffect(() => {
