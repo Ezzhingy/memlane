@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 
 import { Text, View } from "@/components/Themed";
@@ -7,10 +7,13 @@ import DisplayMap from "@/components/DisplayMap";
 import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import MyMemories from "@/components/MyMemories";
+import NearbyMemories from "@/components/NearbyMemories";
+import { AsyncStorageContext } from "../_layout";
 
 export default function HomeScreen() {
   const [locationName, setLocationName] = useState<string>();
   const [username, setUsername] = useState<string>();
+  const { didAsyncStorageUpdate } = useContext(AsyncStorageContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -37,7 +40,7 @@ export default function HomeScreen() {
     };
 
     getUsername();
-  }, [AsyncStorage]);
+  }, [didAsyncStorageUpdate]);
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
@@ -57,6 +60,7 @@ export default function HomeScreen() {
       <MyMemories />
 
       <Text style={styles.title}>Explore Other Memories</Text>
+      <NearbyMemories />
     </ScrollView>
   );
 }

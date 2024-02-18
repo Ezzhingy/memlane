@@ -2,15 +2,19 @@ import { StatusBar } from "expo-status-bar";
 import { Platform, StyleSheet, TextInput } from "react-native";
 
 import { Text, View } from "@/components/Themed";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AsyncStorageContext } from "./_layout";
 
 export default function LoginScreen() {
   const [userText, setUserText] = useState<string>("");
   const [passwordText, setPasswordText] = useState<string>("");
   const handleUserChange = (text: string) => setUserText(text);
   const handlePasswordChange = (text: string) => setPasswordText(text);
+  const { didAsyncStorageUpdate, setDidAsyncStorageUpdate } =
+    useContext(AsyncStorageContext);
+
   const handleSubmit = async () => {
     try {
       const data = await fetch(
@@ -23,6 +27,7 @@ export default function LoginScreen() {
       }
       await AsyncStorage.setItem("id", res[0].id.toString());
       await AsyncStorage.setItem("username", res[0].username);
+      setDidAsyncStorageUpdate(!didAsyncStorageUpdate);
     } catch (error) {
       console.error(error);
     }

@@ -1,20 +1,22 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from "./Themed";
 import { ImageBackground, ScrollView } from "react-native";
 import { StyleSheet } from "react-native";
-import { AsyncStorageContext } from "@/app/_layout";
+import { getLocation } from "@/app/functions/location";
+import * as Location from "expo-location";
 
-const MyMemories: React.FC = () => {
+const NearbyMemories: React.FC = () => {
   const [memories, setMemories] = useState<any[]>([]);
-  const { didAsyncStorageUpdate, setDidAsyncStorageUpdate } =
-    useContext(AsyncStorageContext);
+  const [_, setLocation] = useState<Location.LocationObject>();
 
   useEffect(() => {
     const getMemories = async () => {
-      const userId = await AsyncStorage.getItem("id");
-      if (userId) {
-        const data = await fetch(`/api/user/memories/${userId}`);
+      const location = await getLocation(setLocation);
+      if (location) {
+        const data = await fetch(
+          `/api/memory/nearby?longitude=${location.coords.longitude}&latitude=${location.coords.latitude}`
+        );
         const res = await data.json();
         const newMemories = res.map((memory: any) => [
           memory.file_url,
@@ -24,7 +26,7 @@ const MyMemories: React.FC = () => {
       }
     };
     getMemories();
-  }, [didAsyncStorageUpdate]);
+  }, []);
 
   return (
     <View>
@@ -60,4 +62,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyMemories;
+export default NearbyMemories;

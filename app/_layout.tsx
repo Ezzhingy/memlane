@@ -7,7 +7,7 @@ import {
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import { createContext, useEffect, useState } from "react";
 
 import { useColorScheme } from "@/components/useColorScheme";
 
@@ -48,17 +48,28 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
+export const AsyncStorageContext = createContext({
+  didAsyncStorageUpdate: false,
+  setDidAsyncStorageUpdate: (_: boolean) => {},
+});
+
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
+  const [didAsyncStorageUpdate, setDidAsyncStorageUpdate] = useState(false);
+
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="login" options={{ presentation: "modal" }} />
-        <Stack.Screen name="signup" options={{ presentation: "modal" }} />
-        <Stack.Screen name="memory/[id]" options={{ headerShown: false }} />
-      </Stack>
-    </ThemeProvider>
+    <AsyncStorageContext.Provider
+      value={{ didAsyncStorageUpdate, setDidAsyncStorageUpdate }}
+    >
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="login" options={{ presentation: "modal" }} />
+          <Stack.Screen name="signup" options={{ presentation: "modal" }} />
+          <Stack.Screen name="memory/[id]" options={{ headerShown: false }} />
+        </Stack>
+      </ThemeProvider>
+    </AsyncStorageContext.Provider>
   );
 }
