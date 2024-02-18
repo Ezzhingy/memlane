@@ -1,5 +1,7 @@
 import { Camera, CameraType } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
+import CircleButton from "@/components/circlebutton";
+import Icon from "react-native-vector-icons/MaterialIcons";
 import {
   Pressable,
   StyleSheet,
@@ -56,15 +58,22 @@ export default function App() {
     <View style={styles.container}>
       {togglePicture || toggleVideo ? (
         <Camera ref={cameraRef} style={styles.camera} type={type}>
+
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={togglePictureType}>
-              <Text style={styles.text}>Flip Camera</Text>
-            </TouchableOpacity>
+
+            <View style={styles.emptyView}></View>
+
             {togglePicture && (
               <TouchableOpacity style={styles.button} onPress={takePicture}>
-                <Text style={styles.text}>Take Picture</Text>
+                  <CircleButton onPress={takePicture} title=" " />
               </TouchableOpacity>
             )}
+
+            <TouchableOpacity style={styles.button} onPress={togglePictureType}>
+              <Icon name="sync" size={40} color="white" />
+            </TouchableOpacity>
+
+
             {toggleVideo && (
               <View>
                 {isStoppedRecording ? (
@@ -78,6 +87,7 @@ export default function App() {
                 )}
               </View>
             )}
+
           </View>
         </Camera>
       ) : (
@@ -102,18 +112,26 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   buttonContainer: {
-    flex: 1,
-    backgroundColor: "transparent",
-    flexDirection: "row",
-    margin: 20,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    alignItems: 'center',
+    padding: 24,
+    backgroundColor: 'black',
   },
   button: {
     flex: 1,
-    alignSelf: "flex-end",
+    alignSelf: "center",
     alignItems: "center",
   },
   text: {
     fontSize: 18,
     color: "white",
+  },
+  emptyView: {
+    flex: 1,
   },
 });
