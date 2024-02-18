@@ -55,10 +55,9 @@ const MyMemories: React.FC = () => {
 
 const styles = StyleSheet.create({
   image: {
-    borderRadius: 8,
     width: 200,
     height: 200,
-    paddingRight: 8,
+    marginRight: 8,
   },
   imageContainer: {
     backgroundColor: "transparent",
