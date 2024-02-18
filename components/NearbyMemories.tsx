@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from "./Themed";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ImageBackground, ScrollView } from "react-native";
 import { StyleSheet } from "react-native";
 import { getLocation } from "@/app/functions/location";
@@ -45,7 +45,7 @@ const NearbyMemories: React.FC = () => {
                 source={{ uri: memory[0] }}
                 style={styles.image}
               />
-              <Text style={{ color: "white", padding: 5 }}>{memory[1]}</Text>
+              <Text style={{ color: "black", padding: 5 }}>{memory[1]}</Text>
             </View>
           );
         })}
