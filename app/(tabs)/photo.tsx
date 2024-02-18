@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   button: {
-    flex: 0.1,
+    flex: 1,
     alignSelf: "flex-end",
     alignItems: "center",
   },
