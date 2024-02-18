@@ -19,8 +19,13 @@ const MyMemories: React.FC = () => {
         const newMemories = res.map((memory: any) => [
           memory.file_url,
           memory.title,
+          memory.id
         ]);
         setMemories(newMemories);
+
+        // Extracting memory IDs and storing them in AsyncStorage
+        const memoryIds = res.map((memory: any) => memory.id);
+        await AsyncStorage.setItem("userMemoryIds", JSON.stringify(memoryIds));
       }
     };
     getMemories();
@@ -49,10 +54,9 @@ const MyMemories: React.FC = () => {
 
 const styles = StyleSheet.create({
   image: {
-    borderRadius: 8,
     width: 200,
     height: 200,
-    paddingRight: 8,
+    marginRight: 8,
   },
   imageContainer: {
     backgroundColor: "transparent",
