@@ -27,15 +27,15 @@ curl -X POST \
 export async function POST(request: ExpoRequest): Promise<ExpoResponse> {
     try {
         // Extract fileName, filePath, and fileType from the request body
-        const { fileName, filePath, fileType } = await request.json();
+        const { fileName, fileData, fileType } = await request.json();
 
-        if (!fileName || !filePath || !fileType) {
-            throw new Error('Missing fileName, filePath, or fileType in the request body');
+        if (!fileName || !fileData || !fileType) {
+            throw new Error('Missing fileName, fileData, or fileType in the request body');
         }
 
-        // Fetch the file from the URL
-        const response = await fetch(filePath);
-        const fileData = await response.arrayBuffer();
+        // // Fetch the file from the URL
+        // const response = await fetch(filePath);
+        // const fileData = await response.arrayBuffer();
 
         // Upload the file to Supabase storage
         const url = await uploadFileToStorage(fileName, fileData, fileType);
