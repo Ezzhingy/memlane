@@ -12,7 +12,6 @@ export async function POST(request: ExpoRequest) {
         .select();
 
     if (error) {
-        console.log("ERROR",error);
         return new ExpoResponse("Error posting reaction", {
             status: 500,
             headers: {
