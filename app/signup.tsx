@@ -60,8 +60,9 @@ export default function SignupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: "flex-start",
+    justifyContent: "flex-start",
+    padding: 24,
   },
   title: {
     fontSize: 20,
@@ -77,14 +78,15 @@ const styles = StyleSheet.create({
     width: "100%",
     borderColor: "gray",
     color: "green",
+    borderRadius: 2,
     borderWidth: 1,
     marginBottom: 20,
     paddingHorizontal: 10,
   },
   submit: {
+    borderRadius: 5,
     backgroundColor: "green",
     color: "white",
     padding: 10,
-    borderRadius: 5,
   },
 });
