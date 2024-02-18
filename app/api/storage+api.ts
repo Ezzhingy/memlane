@@ -8,7 +8,6 @@ curl -X POST \
   -d '{"fileName": "temp3.jpg", "filePath": "https://www.wikihow.com/images/thumb/d/d9/Add-a-Hyperlink-to-a-Jpeg-in-Photoshop-Step-3.jpg/v4-460px-Add-a-Hyperlink-to-a-Jpeg-in-Photoshop-Step-3.jpg", "fileType": "image/jpeg"}' \
   http://localhost:8081/api/storage
 
-
   curl -X POST \
   -H "Content-Type: application/json" \
   -d '{"fileName": "temp5.jpg", "filePath": "https://upload.wikimedia.org/wikipedia/commons/4/47/PNG_transparency_demonstration_1.png", "fileType": "image/jpeg"}' \
@@ -16,10 +15,13 @@ curl -X POST \
 
   curl -X POST \
   -H "Content-Type: application/json" \
-  -d '{"fileName": "audio.mp3", "filePath": "https://file-examples.com/wp-content/storage/2017/11/file_example_MP3_700KB.mp3", "fileType": "audio/mpeg"}' \
+  -d '{"fileName": "video.mp4", "filePath": "https://download.samplelib.com/mp4/sample-5s.mp4", "fileType": "video/mp4"}' \
   http://localhost:8081/api/storage
 
-https://file-examples.com/wp-content/storage/2017/11/file_example_MP3_700KB.mp3
+  curl -X POST \
+  -H "Content-Type: application/json" \
+  -d '{"fileName": "audio.mp3", "filePath": "https://file-examples.com/wp-content/storage/2017/11/file_example_MP3_700KB.mp3", "fileType": "audio/mp3"}' \
+  http://localhost:8081/api/storage
 */
 
 export async function POST(request: ExpoRequest): Promise<ExpoResponse> {
