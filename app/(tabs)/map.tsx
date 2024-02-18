@@ -5,6 +5,7 @@ import MapView from "react-native-maps";
 import { useEffect, useState } from "react";
 // import * as TaskManager from "expo-task-manager";
 import * as Location from "expo-location";
+import { getLocation } from "../functions/location";
 
 // const LOCATION_TASK_NAME = "background-location-task";
 
@@ -26,17 +27,10 @@ export default function MapScreen() {
   const [location, setLocation] = useState<Location.LocationObject>();
 
   useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.error("Permission to access location was denied");
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-    })();
-
+    const fetchData = async () => {
+      await getLocation(setLocation);
+    };
+    fetchData();
     // requestPermissions();
   }, []);
 
