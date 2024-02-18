@@ -28,36 +28,41 @@ const MyMemories: React.FC = () => {
   }, [didAsyncStorageUpdate]);
 
   return (
-    <View>
+    <View style={{ backgroundColor: "transparent" }}>
       <ScrollView horizontal style={styles.imageContainer}>
         {memories.map((memory, index) => {
           return (
-            <View key={index}>
+            <View key={index} style={{ backgroundColor: "transparent" }}>
               <ImageBackground
                 source={{ uri: memory[0] }}
-                style={styles.image}
+                style={[styles.image, { backgroundColor: "transparent" }]}
               />
-              <Text style={{ color: "white", padding: 5 }}>{memory[1]}</Text>
+              <Text style={{ color: "black", padding: 4, alignSelf: "center" }}>
+                {memory[1]}
+              </Text>
             </View>
           );
         })}
-      </ScrollView >
-    </View >
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   image: {
+    borderRadius: 8,
     width: 200,
     height: 200,
-    margin: 5,
-    borderRadius: 10,
+    paddingRight: 8,
   },
   imageContainer: {
+    backgroundColor: "transparent",
     display: "flex",
     flexDirection: "row",
     overflow: "scroll",
-    paddingLeft: 24,
+    marginTop: 24,
+    paddingBottom: 12,
+    marginBottom: 24,
   },
 });
 
