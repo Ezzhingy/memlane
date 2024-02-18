@@ -4,6 +4,9 @@ import { StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { getLocation, getLocationName } from "../functions/location";
 import DisplayMap from "@/components/DisplayMap";
+import * as Location from "expo-location";
+import MapView, { Region } from "react-native-maps";
+import { ScrollView } from "react-native";
 
 export default function HomeScreen() {
   const [locationName, setLocationName] = useState<string>();
@@ -21,8 +24,8 @@ export default function HomeScreen() {
   }, []);
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome back, USERNAME</Text>
+    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <Text style={styles.title}>Welcome back, hacker!</Text>
       <View
         style={styles.separator}
         lightColor="#eee"
@@ -33,29 +36,33 @@ export default function HomeScreen() {
       ) : (
         <Text style={styles.title}>Loading...</Text>
       )}
-      <DisplayMap width="80%" height="60%" />
-
-    </View >
+      <DisplayMap width="90%" height="100%" />
+      <Text style={styles.title}>My Memories</Text>
+      <Text style={styles.title}>Explore Other Memories</Text>
+      
+    </ScrollView >
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
-    paddingLeft: 60,
+    paddingLeft: 24,
+    paddingTop: 24
   },
   separator: {
-    marginVertical: 30,
+    marginVertical: 24,
     height: 1,
-    width: "80%",
+    // width: "80%",
   },
   locationTitle: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: "bold",
-    paddingLeft: 60,
+    paddingLeft: 24,
   },
 });
