@@ -36,7 +36,7 @@ export default function HomeScreen() {
       </View>
       <DisplayMap width="80%" height="60%" />
       <View style={styles.titleContainer}>
-        <Text>Your Memories</Text>
+        {/* <Text>Your Memories</Text> */}
         <View></View>
       </View>
     </View>
