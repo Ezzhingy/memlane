@@ -73,7 +73,6 @@ export default function App() {
           console.error('Error uploading file:', error);
       }
       console.log(uri);
-      setTogglePicture(false);
     }
   }
 
