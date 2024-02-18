@@ -56,7 +56,7 @@ export default function HomeScreen() {
         <Text style={styles.title}>Loading...</Text>
       )}
       <View style={styles.mapContainer}>
-        <DisplayMap width={"100%"} height={"100%"} />
+        <DisplayMap width={"100%"} height={250} />
       </View>
       <Text style={styles.title}>My Memories</Text>
       <MyMemories />
