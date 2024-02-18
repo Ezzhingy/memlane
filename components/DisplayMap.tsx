@@ -34,7 +34,7 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
       alignItems: "center",
       justifyContent: "flex-start",
       paddingTop: 24,
-      paddingBottom: 24
+      paddingBottom: 24,
     },
     map: {
       width: width,
@@ -56,9 +56,17 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
   });
   const [markers, setMarkers] = useState<any>([]);
 
-  const getNearbyMemories = async (latitude: GLfloat, longitude: GLfloat, radius: GLfloat) => {
+  const getNearbyMemories = async (
+    latitude: GLfloat,
+    longitude: GLfloat,
+    radius: GLfloat
+  ) => {
     try {
-      const response = await fetch(`/api/memory/nearby?longitude=${longitude}&latitude=${latitude}&radius=${1609 * (radius / 2)}`);
+      const response = await fetch(
+        `/api/memory/nearby?longitude=${longitude}&latitude=${latitude}&radius=${
+          1609 * (radius / 2)
+        }`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -77,9 +85,9 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
 
       setMarkers(markers);
     } catch (error) {
-      console.error('Failed to fetch nearby memories:', error);
+      console.error("Failed to fetch nearby memories:", error);
     }
-  }
+  };
 
   const calculateVisibleDistance = (latitudeDelta: number) => {
     // Each degree of latitude is approximately 111 kilometers
@@ -90,7 +98,6 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
 
     return visibleDistance;
   };
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -104,9 +111,13 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
     const fetchNearbyMemories = async () => {
       if (region && region.latitude && region.longitude) {
         try {
-          await getNearbyMemories(region.latitude, region.longitude, calculateVisibleDistance(region.latitudeDelta));
+          await getNearbyMemories(
+            region.latitude,
+            region.longitude,
+            calculateVisibleDistance(region.latitudeDelta)
+          );
         } catch (error) {
-          console.error('Failed to fetch nearby memories:', error);
+          console.error("Failed to fetch nearby memories:", error);
         }
       }
     };
@@ -150,7 +161,6 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
 //     return;
 //   }
 //   if (data) {
-//     console.log("background", data);
 //     // do something with the locations captured in the background
 //   }
 // });

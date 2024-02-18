@@ -39,8 +39,7 @@ export default function HomeScreen() {
       <DisplayMap width="90%" height="100%" />
       <Text style={styles.title}>My Memories</Text>
       <Text style={styles.title}>Explore Other Memories</Text>
-      
-    </ScrollView >
+    </ScrollView>
   );
 }
 
@@ -49,11 +48,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "white",
   },
+  titleContainer: {
+    paddingLeft: 40,
+    paddingTop: 40,
+  },
   title: {
     fontSize: 18,
     fontWeight: "bold",
     paddingLeft: 24,
-    paddingTop: 24
+    paddingTop: 24,
   },
   separator: {
     marginVertical: 24,
