@@ -12,14 +12,20 @@ const NearbyMemories: React.FC = () => {
 
   useEffect(() => {
     const getMemories = async () => {
+      const userMemoryIdsString = await AsyncStorage.getItem("memoryIds");
+      const userMemoryIds = userMemoryIdsString ? JSON.parse(userMemoryIdsString) : [];
+
       const location = await getLocation(setLocation);
       if (location) {
         const data = await fetch(
           `/api/memory/nearby?longitude=${location.coords.longitude}&latitude=${location.coords.latitude}&radius=100`
         );
         const res = await data.json();
-        console.log("asd", res);
-        const newMemories = res.map((memory: any) => [
+        
+        // Filter out memories that belong to the user
+        const filteredMemories = res.filter((memory: any) => !userMemoryIds.includes(memory.id));
+
+        const newMemories = filteredMemories.map((memory: any) => [
           memory.file_url,
           memory.title,
         ]);
