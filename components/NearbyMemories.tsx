@@ -15,9 +15,10 @@ const NearbyMemories: React.FC = () => {
       const location = await getLocation(setLocation);
       if (location) {
         const data = await fetch(
-          `/api/memory/nearby?longitude=${location.coords.longitude}&latitude=${location.coords.latitude}`
+          `/api/memory/nearby?longitude=${location.coords.longitude}&latitude=${location.coords.latitude}&radius=100`
         );
         const res = await data.json();
+        console.log("asd", res);
         const newMemories = res.map((memory: any) => [
           memory.file_url,
           memory.title,

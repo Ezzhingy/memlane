@@ -9,26 +9,11 @@ import {
 
 import { Text, View } from "@/components/Themed";
 import { getLocation, getLocationName } from "@/app/functions/location";
-import DisplayMap from "@/components/DisplayMap";
 import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import MyMemories from "@/components/MyMemories";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { TextInput, Image } from "react-native";
 import * as Location from "expo-location";
-import axios from "axios";
-import { AsyncStorageContext } from "./_layout";
-
-interface Memory {
-  id?: number;
-  created_at: string;
-  file_type: "image" | "video" | "text" | "audio";
-  file_url: string;
-  coordinates: string;
-  user_id: number;
-  title: string;
-  description?: string;
-}
 
 export default function CreateScreen() {
   const [title, setTitle] = useState<string>("");
@@ -36,22 +21,12 @@ export default function CreateScreen() {
   const [location, setLocation] = useState<Location.LocationObject>();
   const [locationName, setLocationName] = useState<string>();
   const [photo, setPhoto] = useState<string>();
-  const [newMemory, setNewMemory] = useState<Memory>();
   const [userId, setuserId] = useState<number>();
   const { uri } = useLocalSearchParams();
 
   const navigation = useNavigation();
-  const { didAsyncStorageUpdate } = useContext(AsyncStorageContext);
 
   useEffect(() => {
-    (async () => {
-      const currentLocation = await getLocation(setLocation);
-      const locationName = await getLocationName(
-        setLocationName,
-        currentLocation?.coords.latitude!,
-        currentLocation?.coords.longitude!
-      );
-    })();
     const getuserId = async () => {
       try {
         const userId = await AsyncStorage.getItem("id");
@@ -92,7 +67,7 @@ export default function CreateScreen() {
       });
       const data = await response.json();
       console.log(data);
-      navigation.navigate("index");
+      navigation.navigate();
     } catch (error) {
       console.error(error);
     }
