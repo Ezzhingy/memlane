@@ -14,15 +14,24 @@ export default async function uploadFileToStorage(fileName: string, file: any, f
         let uploadData = file;
 
         // If file type is video, use the provided content type
-        if (fileType === 'video/mp4' || fileType === 'image/jpeg' || fileType === 'audio/mp3') {
+        if (fileType === 'image/jpeg') {
+            // const base64Data = btoa(new Uint8Array(file).reduce((data, byte) => data + String.fromCharCode(byte), ''));
+            // Convert the file to base64 string
+            // Decode the base64 string to binary data
+            const binaryData = decode(prepareBase64DataUrl(file));
+            uploadData = binaryData;
+            contentType = fileType;
+        } else if (fileType === 'video/mp4' || fileType === 'video/mov') {
             const base64Data = btoa(new Uint8Array(file).reduce((data, byte) => data + String.fromCharCode(byte), ''));
             // Convert the file to base64 string
             // Decode the base64 string to binary data
             const binaryData = decode(prepareBase64DataUrl(base64Data));
             uploadData = binaryData;
             contentType = fileType;
-            
-        } 
+        } else if (fileType === 'audio/mp3') {
+            contentType = fileType;
+            uploadData = file;
+        }
 
         // Upload the file to Supabase storage
         const { data, error } = await supabase.storage
