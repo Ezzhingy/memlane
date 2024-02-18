@@ -1,7 +1,6 @@
 import { Camera, CameraType } from "expo-camera";
 import { useEffect, useRef, useState } from "react";
 import {
-  Button,
   Pressable,
   StyleSheet,
   Text,
@@ -11,13 +10,16 @@ import {
 
 export default function App() {
   const [type, setType] = useState(CameraType.back);
-  const [_, requestPermission] = Camera.useCameraPermissions();
+  const [_, requestCameraPermissions] = Camera.useCameraPermissions();
+  const [__, requestAudioPermissions] = Camera.useMicrophonePermissions();
   const [togglePicture, setTogglePicture] = useState(false);
   const [toggleVideo, setToggleVideo] = useState(false);
+  const [isStoppedRecording, setIsStoppedRecording] = useState(true);
   const cameraRef = useRef<Camera>(null);
 
   useEffect(() => {
-    requestPermission();
+    requestCameraPermissions();
+    requestAudioPermissions();
   }, []);
 
   function togglePictureType() {
@@ -28,22 +30,54 @@ export default function App() {
 
   async function takePicture() {
     if (cameraRef) {
-      const res = await cameraRef.current?.takePictureAsync({ base64: true });
+      const data = await cameraRef.current?.takePictureAsync({ base64: true });
       setTogglePicture(false);
+      // console.log(data);
+    }
+  }
+
+  async function startVideo() {
+    if (cameraRef) {
+      setIsStoppedRecording(false);
+      const data = await cameraRef.current?.recordAsync();
+      // console.log(data);
+    }
+  }
+
+  async function stopVideo() {
+    if (cameraRef) {
+      cameraRef.current?.stopRecording();
+      setIsStoppedRecording(true);
+      setToggleVideo(false);
     }
   }
 
   return (
     <View style={styles.container}>
-      {togglePicture ? (
+      {togglePicture || toggleVideo ? (
         <Camera ref={cameraRef} style={styles.camera} type={type}>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={togglePictureType}>
               <Text style={styles.text}>Flip Camera</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={takePicture}>
-              <Text style={styles.text}>Take Picture</Text>
-            </TouchableOpacity>
+            {togglePicture && (
+              <TouchableOpacity style={styles.button} onPress={takePicture}>
+                <Text style={styles.text}>Take Picture</Text>
+              </TouchableOpacity>
+            )}
+            {toggleVideo && (
+              <View>
+                {isStoppedRecording ? (
+                  <TouchableOpacity style={styles.button} onPress={startVideo}>
+                    <Text style={styles.text}>Start Video</Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity style={styles.button} onPress={stopVideo}>
+                    <Text style={styles.text}>Stop Video</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+            )}
           </View>
         </Camera>
       ) : (
