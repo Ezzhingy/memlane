@@ -59,6 +59,11 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
     longitudeDelta: 0.0071,
   });
   const [markers, setMarkers] = useState<any>([]);
+  const [followsUserLocation, setFollowsUserLocation] = useState(true);
+
+  const handlePanDrag = () => {
+    setFollowsUserLocation(false);
+  };
 
   const markerInRange = (marker: any) => {
     if (location && location.coords.latitude && location.coords.longitude) {
@@ -196,9 +201,10 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
           region={region}
           onRegionChangeComplete={(region) => setRegion(region)}
           showsUserLocation
-          followsUserLocation
+          followsUserLocation={followsUserLocation}
           showsMyLocationButton
           showsPointsOfInterest={false}
+          onPanDrag={handlePanDrag}
         >
           <Button title="Center on user" onPress={centerMapOnUser} />
           {markers.map((marker: any, index: any) => {

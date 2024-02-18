@@ -9,6 +9,7 @@ interface Memory {
     coordinates: string;
     user_id: number;
     title: string;
+    description?: string;
 }
 
 function validateMemory(memory: any): memory is Memory {
@@ -21,7 +22,8 @@ function validateMemory(memory: any): memory is Memory {
         typeof memory.file_url !== 'string' ||
         typeof memory.coordinates !== 'string' ||
         typeof memory.user_id !== 'number' ||
-        typeof memory.title !== 'string'
+        typeof memory.title !== 'string' ||
+        typeof memory.description !== 'string'
     ) {
         return false;
     }

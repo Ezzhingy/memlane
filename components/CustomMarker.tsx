@@ -2,11 +2,10 @@ import React from 'react';
 import { Image, View, Text, StyleSheet } from 'react-native';
 import { Marker } from 'react-native-maps';
 import { MaterialIcons } from '@expo/vector-icons'; // for icons
-import { SvgUri } from 'react-native-svg';
 import { Link } from 'expo-router';
 
 const CustomMarker = (props: any) => {
-    const { file_type, file_url, coordinate, title, description, visited, user_id, markerInRange } = props;
+    const { id, file_type, file_url, coordinate, title, description, visited, user_id, markerInRange } = props;
 
     // Render different content based on the type of memory
     const renderContent = (visited: boolean) => {
@@ -61,7 +60,7 @@ const CustomMarker = (props: any) => {
 
     return (
         markerInRange || visited ? (
-            <Link href="/modal" asChild>
+            <Link href={`/memory/${String(id)}:${String(coordinate.latitude)}:${String(coordinate.longitude)}`} asChild>
                 <Marker coordinate={coordinate}>
                     <View style={markerStyle}>
                         {renderContent(visited)}
