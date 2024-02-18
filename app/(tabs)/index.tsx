@@ -4,10 +4,9 @@ import { StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
 import { getLocation, getLocationName } from "../functions/location";
 import DisplayMap from "@/components/DisplayMap";
-import * as Location from "expo-location";
-import MapView, { Region } from "react-native-maps";
 import { ScrollView } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import MyMemories from "@/components/MyMemories";
 
 export default function HomeScreen() {
   const [locationName, setLocationName] = useState<string>();
@@ -53,8 +52,10 @@ export default function HomeScreen() {
       ) : (
         <Text style={styles.title}>Loading...</Text>
       )}
-      <DisplayMap width="90%" height="100%" />
+      <DisplayMap width={350} height={250} />
       <Text style={styles.title}>My Memories</Text>
+      <MyMemories />
+
       <Text style={styles.title}>Explore Other Memories</Text>
     </ScrollView>
   );
@@ -77,7 +78,6 @@ const styles = StyleSheet.create({
   separator: {
     marginVertical: 24,
     height: 1,
-    // width: "80%",
   },
   locationTitle: {
     fontSize: 24,

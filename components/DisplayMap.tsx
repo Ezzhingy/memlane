@@ -63,26 +63,36 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
   const markerInRange = (marker: any) => {
     if (location && location.coords.latitude && location.coords.longitude) {
       const R = 6371e3; // Earth radius in meters
-      const lat1 = location.coords.latitude * Math.PI / 180; // convert to radians
-      const lat2 = marker.latitude * Math.PI / 180;
-      const deltaLat = (marker.latitude - location.coords.latitude) * Math.PI / 180;
-      const deltaLon = (marker.longitude - location.coords.longitude) * Math.PI / 180;
+      const lat1 = (location.coords.latitude * Math.PI) / 180; // convert to radians
+      const lat2 = (marker.latitude * Math.PI) / 180;
+      const deltaLat =
+        ((marker.latitude - location.coords.latitude) * Math.PI) / 180;
+      const deltaLon =
+        ((marker.longitude - location.coords.longitude) * Math.PI) / 180;
 
-      const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-        Math.cos(lat1) * Math.cos(lat2) *
-        Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+      const a =
+        Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
+        Math.cos(lat1) *
+          Math.cos(lat2) *
+          Math.sin(deltaLon / 2) *
+          Math.sin(deltaLon / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
       const distance = R * c; // in meters
       return distance <= 100;
     }
     return false;
-  }
+  };
 
-  const getNearbyMemories = async (latitude: GLfloat, longitude: GLfloat, radius: GLfloat) => {
+  const getNearbyMemories = async (
+    latitude: GLfloat,
+    longitude: GLfloat,
+    radius: GLfloat
+  ) => {
     try {
       const response = await fetch(
-        `/api/memory/nearby?longitude=${longitude}&latitude=${latitude}&radius=${1609 * (radius / 2)
+        `/api/memory/nearby?longitude=${longitude}&latitude=${latitude}&radius=${
+          1609 * (radius / 2)
         }`
       );
       if (!response.ok) {
@@ -90,27 +100,31 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
       }
       const data = await response.json();
 
-      const markers = await Promise.all(data.map(async (memory: any) => {
-        const response2 = await fetch(`/api/memory/visited?memory_id=${memory.id}&user_id=${1}`);
+      const markers = await Promise.all(
+        data.map(async (memory: any) => {
+          const response2 = await fetch(
+            `/api/memory/visited?memory_id=${memory.id}&user_id=${1}`
+          );
 
-        if (!response2.ok) {
-          throw new Error(`HTTP error! status: ${response2.status}`);
-        }
+          if (!response2.ok) {
+            throw new Error(`HTTP error! status: ${response2.status}`);
+          }
 
-        const data2 = await response2.json();
+          const data2 = await response2.json();
 
-        const inRange = markerInRange(memory);
+          const inRange = markerInRange(memory);
 
-        return {
-          ...memory,
-          latlng: {
-            latitude: memory.latitude,
-            longitude: memory.longitude,
-          },
-          visited: data2.length > 0,
-          markerInRange: inRange,
-        };
-      }));
+          return {
+            ...memory,
+            latlng: {
+              latitude: memory.latitude,
+              longitude: memory.longitude,
+            },
+            visited: data2.length > 0,
+            markerInRange: inRange,
+          };
+        })
+      );
 
       setMarkers(markers);
     } catch (error) {
