@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Text, View } from "./Themed";
 import { ImageBackground, ScrollView } from "react-native";
 import { StyleSheet } from "react-native";
@@ -18,7 +17,6 @@ const NearbyMemories: React.FC = () => {
           `/api/memory/nearby?longitude=${location.coords.longitude}&latitude=${location.coords.latitude}&radius=100`
         );
         const res = await data.json();
-        console.log("asd", res);
         const newMemories = res.map((memory: any) => [
           memory.file_url,
           memory.title,
@@ -39,7 +37,7 @@ const NearbyMemories: React.FC = () => {
                 source={{ uri: memory[0] }}
                 style={styles.image}
               />
-              <Text style={{ color: "white", padding: 5 }}>{memory[1]}</Text>
+              <Text style={{ color: "black", padding: 5 }}>{memory[1]}</Text>
             </View>
           );
         })}
