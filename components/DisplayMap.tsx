@@ -55,15 +55,17 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
 
   const getNearbyMemories = async (latitude: GLfloat, longitude: GLfloat) => {
     try {
-      const response = await fetch(`/api/memory/nearby?longitude=${longitude}&latitude=${latitude}`);
+      const response = await fetch(
+        `/api/memory/nearby?longitude=${longitude}&latitude=${latitude}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
     } catch (error) {
-      console.error('Failed to fetch nearby memories:', error);
+      console.error("Failed to fetch nearby memories:", error);
     }
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,11 +78,10 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
   useEffect(() => {
     const fetchNearbyMemories = async () => {
       if (region && region.latitude && region.longitude) {
-        console.log(region.latitude, region.longitude);
         try {
           await getNearbyMemories(region.latitude, region.longitude);
         } catch (error) {
-          console.error('Failed to fetch nearby memories:', error);
+          console.error("Failed to fetch nearby memories:", error);
         }
       }
     };
@@ -122,7 +123,6 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
 //     return;
 //   }
 //   if (data) {
-//     console.log("background", data);
 //     // do something with the locations captured in the background
 //   }
 // });
