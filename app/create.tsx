@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Button, StyleSheet, TouchableOpacity } from "react-native";
+import { Button, KeyboardAvoidingView, Platform, StyleSheet, TouchableOpacity } from "react-native";
 
 import { Text, View } from "@/components/Themed";
 import { getLocation, getLocationName } from "@/app/functions/location";
@@ -89,13 +89,16 @@ export default function CreateScreen() {
     };
 
     return (
-        <>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={{ flex: 1 }}
+        >
             <View style={styles.header}>
                 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
                     <Button title="< Back" onPress={() => navigation.goBack()} />
                 </TouchableOpacity>
             </View>
-            <View style={styles.container}>
+            <ScrollView style={styles.container}>
                 <Text style={styles.title}>Create a Memory</Text>
                 <Text style={styles.title}>Location: {locationName}</Text>
                 {photo && <Image source={{ uri: process.env.STORAGE_URL + photo as string }} style={styles.image} />}
@@ -119,8 +122,8 @@ export default function CreateScreen() {
                     multiline
                 />
                 <Button title="Save" onPress={handleSave} />
-            </View>
-        </>
+            </ScrollView>
+        </KeyboardAvoidingView>
     );
 }
 
@@ -139,6 +142,7 @@ const styles = StyleSheet.create({
         // Add more styles for your back button here
     },
     container: {
+        padding: 24,
         flex: 1,
     },
     titleContainer: {
@@ -146,10 +150,9 @@ const styles = StyleSheet.create({
         paddingTop: 40,
     },
     title: {
-        fontSize: 18,
+        marginTop: 18,
+        fontSize: 21,
         fontWeight: "bold",
-        paddingLeft: 24,
-        paddingTop: 24,
     },
     separator: {
         marginVertical: 24,
