@@ -47,7 +47,7 @@ export default function HomeScreen() {
       <Text style={styles.title}>Welcome back, {username}!</Text>
       <View
         style={styles.separator}
-        lightColor="#eee"
+        lightColor="#bbbbbb"
         darkColor="rgba(255,255,255,0.1)"
       />
       {locationName ? (
@@ -55,7 +55,9 @@ export default function HomeScreen() {
       ) : (
         <Text style={styles.title}>Loading...</Text>
       )}
-      <DisplayMap width={350} height={250} />
+      <View style={styles.mapContainer}>
+        <DisplayMap width={"100%"} height={"100%"} />
+      </View>
       <Text style={styles.title}>My Memories</Text>
       <MyMemories />
 
@@ -67,16 +69,18 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
+    padding: 24,
     flex: 1,
   },
   titleContainer: {
-    paddingLeft: 40,
-    paddingTop: 40,
+  },
+  mapContainer: {
+    backgroundColor: "transparent",
+    borderRadius: 10,
   },
   title: {
     fontSize: 18,
     fontWeight: "bold",
-    paddingLeft: 24,
     paddingTop: 24,
   },
   separator: {
@@ -86,6 +90,5 @@ const styles = StyleSheet.create({
   locationTitle: {
     fontSize: 24,
     fontWeight: "bold",
-    paddingLeft: 24,
   },
 });

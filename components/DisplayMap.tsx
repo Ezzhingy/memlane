@@ -35,8 +35,8 @@ const DisplayMap: React.FC<DisplayMapProps> = ({ width, height }) => {
     container: {
       alignItems: "center",
       justifyContent: "flex-start",
-      paddingTop: 24,
-      paddingBottom: 24,
+      marginTop: 24,
+      marginBottom: 24,
     },
     map: {
       width: width,
