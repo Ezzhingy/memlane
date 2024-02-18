@@ -48,13 +48,6 @@ export default function TabLayout() {
           tabBarIcon: ({ color }) => <TabBarIcon name="camera" color={color} />,
         }}
       />
-      <Tabs.Screen
-      name="newmem"
-      options={{
-        title: "Add Memory",
-        tabBarIcon: ({ color }) => <TabBarIcon name="image" color={color} />,
-      }}
-    />
     </Tabs>
   );
 }

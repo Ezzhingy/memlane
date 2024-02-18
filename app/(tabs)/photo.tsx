@@ -147,11 +147,6 @@ export default function App() {
               </TouchableOpacity>
             )}
 
-            <TouchableOpacity style={styles.button} onPress={togglePictureType}>
-              <Icon name="sync" size={40} color="white" />
-            </TouchableOpacity>
-
-
             {toggleVideo && (
               <View>
                 {isStoppedRecording ? (
@@ -165,6 +160,10 @@ export default function App() {
                 )}
               </View>
             )}
+
+            <TouchableOpacity style={styles.button} onPress={togglePictureType}>
+              <Icon name="sync" size={40} color="white" />
+            </TouchableOpacity>
 
           </View>
         </Camera>
