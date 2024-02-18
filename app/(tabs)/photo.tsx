@@ -14,8 +14,9 @@ export default function App() {
   const [type, setType] = useState(CameraType.back);
   const [_, requestCameraPermissions] = Camera.useCameraPermissions();
   const [__, requestAudioPermissions] = Camera.useMicrophonePermissions();
-  const [togglePicture, setTogglePicture] = useState(false);
-  const [toggleVideo, setToggleVideo] = useState(false);
+  const [toggleMedia, setToggleMedia] = useState(true);
+  // const [togglePicture, setTogglePicture] = useState(true);
+  // const [toggleVideo, setToggleVideo] = useState(false);
   const [isStoppedRecording, setIsStoppedRecording] = useState(true);
   const cameraRef = useRef<Camera>(null);
 
@@ -29,6 +30,10 @@ export default function App() {
       current === CameraType.back ? CameraType.front : CameraType.back
     );
   }
+
+  const toggleMediaFunc = () => {
+    setToggleMedia((prevToggleMedia) => !prevToggleMedia);
+  };
 
   async function takePicture() {
     if (cameraRef) {
@@ -68,7 +73,6 @@ export default function App() {
           console.error('Error uploading file:', error);
       }
       console.log(uri);
-      setTogglePicture(false);
     }
   }
 
@@ -128,34 +132,40 @@ export default function App() {
     if (cameraRef) {
       cameraRef.current?.stopRecording();
       setIsStoppedRecording(true);
-      setToggleVideo(false);
+      // setToggleVideo(false);
     }
   }
 
   return (
     <View style={styles.container}>
-      {togglePicture || toggleVideo ? (
+      { (
         <Camera ref={cameraRef} style={styles.camera} type={type}>
 
           <View style={styles.buttonContainer}>
 
-            <View style={styles.emptyView}></View>
+          <TouchableOpacity style={styles.button} onPress={toggleMediaFunc}>
+              <Icon name="photo-camera" size={40} color="white" />
+          </TouchableOpacity>
+            
 
-            {togglePicture && (
+            {toggleMedia && (
               <TouchableOpacity style={styles.button} onPress={takePicture}>
                   <CircleButton onPress={takePicture} title=" " />
+                  <Text style={styles.text}>PHOTO</Text>
               </TouchableOpacity>
             )}
 
-            {toggleVideo && (
+            {!toggleMedia && (
               <View>
                 {isStoppedRecording ? (
                   <TouchableOpacity style={styles.button} onPress={startVideo}>
-                    <Text style={styles.text}>Start Video</Text>
+                    <CircleButton onPress={startVideo} title=" "/>
+                    <Text style={styles.text}>VIDEO</Text>
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity style={styles.button} onPress={stopVideo}>
-                    <Text style={styles.text}>Stop Video</Text>
+                    <CircleButton onPress={stopVideo} title=" "/>
+                    <Text style={styles.text}>STOP</Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -167,15 +177,6 @@ export default function App() {
 
           </View>
         </Camera>
-      ) : (
-        <View>
-          <Pressable onPress={() => setTogglePicture(true)}>
-            <Text style={styles.text}>take a picture</Text>
-          </Pressable>
-          <Pressable onPress={() => setToggleVideo(true)}>
-            <Text style={styles.text}>take a video</Text>
-          </Pressable>
-        </View>
       )}
     </View>
   );
