@@ -6,6 +6,8 @@ import { StatusBar } from 'expo-status-bar';
 import { getLocation, getLocationName } from '../functions/location';
 import { StyleSheet } from 'react-native';
 import { Image } from 'react-native';
+import Icon from "react-native-vector-icons/MaterialIcons";
+import { format } from 'date-fns';
 
 interface Memory {
     id?: number;
@@ -17,25 +19,51 @@ interface Memory {
     title: string;
     description?: string;
 }
+  
+const formatDate = (dateString: string) => {
+    return format(new Date(dateString), 'MMMM d, yyyy  |  h:mm a');
+};
 
 function Page() {
 
     const styles = StyleSheet.create({
+        container: {
+            padding: 24,
+            flex: 1,
+        },
+        location: {
+            fontSize: 16,
+            fontWeight: "bold",
+            marginLeft: 8
+          },
         header: {
-            height: 50,
+            flexDirection: "row",
+            height: 70,
             width: '100%',
-            justifyContent: 'center',
+            justifyContent: 'space-between',
             alignItems: 'center',
-            marginTop: 40,
-            // Add more styles for your header here
+            marginTop: 36,
         },
-        backButton: {
-            position: 'absolute',
-            left: 10,
-            // Add more styles for your back button here
+        title: {
+            marginTop: 18,
+            fontSize: 21,
+            fontWeight: "bold",
         },
-        memory: {
-            // Add more styles for your memory here
+        description: {
+            marginTop: 12,
+            fontSize: 16,
+            lineHeight: 21,
+        },
+        date: {
+            marginTop: 4,
+            fontSize: 14,
+            lineHeight: 21,
+            color: "gray",
+            fontStyle: "italic",
+        },
+        emptyView: {
+            flexDirection: "row",
+            flex: 1,
         },
     });
     const { id } = useLocalSearchParams();
@@ -65,20 +93,31 @@ function Page() {
     }
 
     return (
-        <>
+        <View style={styles.container}>
             <View style={styles.header}>
-                <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
-                    <Button title="< Back" onPress={() => navigation.goBack()} />
+                <Icon name="location-pin" size={24} color="gray" />
+                <Text style={styles.location}>{locationName}</Text>
+                <View style={styles.emptyView}></View>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Icon name="close" size={36} color="black" />
                 </TouchableOpacity>
+
             </View>
-            <View style={styles.memory}>
-                <Text>{locationName}</Text>
-                <Text>{memory.title}</Text>
-                <Text>{memory.description || "Hello"}</Text>
-                <Text>{memory.created_at}</Text>
-                {memory.file_type === 'image' && <Image source={{ uri: memory.file_url }} style={{ width: 200, height: 200 }} />}
+            <View>
+                {memory.file_type === 'image' && <Image source={{ uri: memory.file_url }} style={{ 
+                    width: "100%",
+                    height: 200,
+                    alignSelf: "center",
+                    borderRadius: 10,
+                }} />}
+                
+                <Text style={styles.title}>{memory.title}</Text>
+                <Text style={styles.date}>{formatDate(memory.created_at)}</Text>
+                <Text style={styles.description}>{memory.description || "Visited a new place today!"}</Text>
+                
+                
             </View>
-        </>
+        </View>
     );
 }
 
