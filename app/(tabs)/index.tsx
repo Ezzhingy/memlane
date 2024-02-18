@@ -7,9 +7,11 @@ import DisplayMap from "@/components/DisplayMap";
 import * as Location from "expo-location";
 import MapView, { Region } from "react-native-maps";
 import { ScrollView } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function HomeScreen() {
   const [locationName, setLocationName] = useState<string>();
+  const [username, setUsername] = useState<string>();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -23,9 +25,24 @@ export default function HomeScreen() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const getUsername = async () => {
+      try {
+        const username = await AsyncStorage.getItem("username");
+        if (username !== null) {
+          setUsername(username);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getUsername();
+  }, [AsyncStorage]);
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <Text style={styles.title}>Welcome back, hacker!</Text>
+      <Text style={styles.title}>Welcome back, {username}!</Text>
       <View
         style={styles.separator}
         lightColor="#eee"
